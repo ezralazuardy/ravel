@@ -1,53 +1,54 @@
-FROM ubuntu:22.04
+FROM php:8.2-alpine
 
 LABEL maintainer="Ezra Lazuardy <ezralucio@gmail.com>"
 LABEL org.opencontainers.image.description "A battery-included CI/CD Environment for Laravel."
 
-ARG WWWGROUP
-ARG NODE_VERSION=16
-ARG POSTGRES_VERSION=14
-
 WORKDIR /var/www/html
 
-ENV DEBIAN_FRONTEND noninteractive
-ENV TZ=UTC
+# Essentials
+RUN echo "UTC" > /etc/timezone
+RUN apk add bash zip unzip curl sqlite nginx supervisor git imagemagick nodejs npm
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+RUN chmod +x /usr/local/bin/install-php-extensions
+RUN sed -i 's/bin\/ash/bin\/bash/g' /etc/passwd
 
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+# Installing PHP
+RUN install-php-extensions \
+    mysqli pdo_mysql pdo_pgsql \
+    sqlite3 fileinfo xml \
+    gd imagick curl \
+    imap exif mbstring \
+    xml zip bcmath \
+    soap intl readline \
+    ldap msgpack igbinary \
+    redis swoole opcache \
+    memcached redis pcov \
+    zip json pcntl
+RUN ln -s /usr/bin/php82 /usr/bin/php
 
-RUN apt-get update \
-    && apt-get install -y gnupg gosu curl ca-certificates zip unzip git supervisor sqlite3 libcap2-bin libpng-dev python2 dnsutils \
-    && curl -sS 'https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x14aa40ec0831756756d7f66c4f4ea0aae5267a6c' | gpg --dearmor | tee /usr/share/keyrings/ppa_ondrej_php.gpg > /dev/null \
-    && echo "deb [signed-by=/usr/share/keyrings/ppa_ondrej_php.gpg] https://ppa.launchpadcontent.net/ondrej/php/ubuntu jammy main" > /etc/apt/sources.list.d/ppa_ondrej_php.list \
-    && apt-get update \
-    && apt-get install -y php8.2-cli php8.2-dev \
-       php8.2-pgsql php8.2-sqlite3 php8.2-gd \
-       php8.2-curl \
-       php8.2-imap php8.2-mysql php8.2-mbstring \
-       php8.2-xml php8.2-zip php8.2-bcmath php8.2-soap \
-       php8.2-intl php8.2-readline \
-       php8.2-ldap \
-       php8.2-msgpack php8.2-igbinary php8.2-redis php8.2-swoole \
-       php8.2-memcached php8.2-pcov php8.2-xdebug \
-    && php -r "readfile('https://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer \
-    && curl -sLS https://deb.nodesource.com/setup_$NODE_VERSION.x | bash - \
-    && apt-get install -y nodejs \
-    && npm install -g npm \
-    && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr/share/keyrings/yarn.gpg >/dev/null \
-    && echo "deb [signed-by=/usr/share/keyrings/yarn.gpg] https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list \
-    && curl -sS https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor | tee /usr/share/keyrings/pgdg.gpg >/dev/null \
-    && echo "deb [signed-by=/usr/share/keyrings/pgdg.gpg] http://apt.postgresql.org/pub/repos/apt jammy-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
-    && apt-get update \
-    && apt-get install -y yarn \
-    && apt-get install -y mysql-client \
-    && apt-get install -y postgresql-client-$POSTGRES_VERSION \
-    && apt-get -y autoremove \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+# Installing composer
+RUN curl -sS https://getcomposer.org/installer -o composer-setup.php
+RUN php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+RUN rm -rf composer-setup.php
 
-RUN update-alternatives --set php /usr/bin/php8.2
+# Configure supervisor
+RUN mkdir -p /etc/supervisor.d/
+COPY ./config/supervisord.ini /etc/supervisor.d/supervisord.ini
 
-RUN setcap "cap_net_bind_service=+ep" /usr/bin/php8.2
+# Configure PHP
+RUN mkdir -p /run/php/
+RUN touch /run/php/php8.2-fpm.pid
+COPY ./config/php-fpm.conf /etc/php82/php-fpm.conf
+COPY ./config/php.ini /etc/php82/php.ini
 
-EXPOSE 8000
+# Configure nginx
+COPY ./config/nginx.conf /etc/nginx/
+COPY ./config/nginx-laravel.conf /etc/nginx/modules/
+RUN mkdir -p /run/nginx/
+RUN touch /run/nginx/nginx.pid
+RUN ln -sf /dev/stdout /var/log/nginx/access.log
+RUN ln -sf /dev/stderr /var/log/nginx/error.log
 
-ENTRYPOINT ["start-container"]
+EXPOSE 80
+
+CMD ["supervisord", "-c", "/etc/supervisor.d/supervisord.ini"]
