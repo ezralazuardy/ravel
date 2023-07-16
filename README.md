@@ -1,5 +1,5 @@
 <a href="https://github.com/ezralazuardy/ravel/actions/workflows/build.yml" target="_blank" rel="noopener noreferrer">
-  <img src="https://github.com/ezralazuardy/ravel/actions/workflows/build.yml/badge.svg?branch=8.2-alpine" alt="Build">
+  <img src="https://github.com/ezralazuardy/ravel/actions/workflows/build.yml/badge.svg?branch=8.2" alt="Build">
 </a>
 <a href="https://github.com/ezralazuardy/ravel/blob/master/LICENSE" target="_blank" rel="noopener noreferrer">
   <img src="https://img.shields.io/github/license/ezralazuardy/ravel?color=yellow" alt="License">
