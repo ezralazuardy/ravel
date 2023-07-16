@@ -1,0 +1,15 @@
+name: Build
+
+on:
+  push:
+    branches: [ "8.2-alpine" ]
+  pull_request:
+    branches: [ "8.2-alpine" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
