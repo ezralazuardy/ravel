@@ -13,7 +13,7 @@ WORKDIR /var/www/html
 ENV TZ=UTC
 
 RUN echo $TZ > /etc/timezone
-RUN apk add bash zip unzip curl sqlite nginx supervisor git imagemagick nodejs npm
+RUN apk add bash zip unzip curl sqlite supervisor git nodejs npm
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 RUN chmod +x /usr/local/bin/install-php-extensions
 RUN sed -i 's/bin\/ash/bin\/bash/g' /etc/passwd
@@ -42,13 +42,6 @@ RUN mkdir -p /run/php/
 RUN touch /run/php/php8.2-fpm.pid
 COPY ./config/php-fpm.conf /etc/php82/php-fpm.conf
 COPY ./config/php.ini /etc/php82/php.ini
-
-#COPY ./config/nginx.conf /etc/nginx/
-#COPY ./config/nginx-laravel.conf /etc/nginx/modules/
-#RUN mkdir -p /run/nginx/
-#RUN touch /run/nginx/nginx.pid
-#RUN ln -sf /dev/stdout /var/log/nginx/access.log
-#RUN ln -sf /dev/stderr /var/log/nginx/error.log
 
 COPY ./config/start-container /usr/local/bin/start-container
 RUN chmod +x /usr/local/bin/start-container
