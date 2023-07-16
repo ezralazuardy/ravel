@@ -25,7 +25,7 @@ You can directly use the image on your CI/CD Platform you want, and let Ravel do
 
 > Heavily inspired by [Laravel Sail](https://github.com/laravel/sail), handcrafted using [Depot](https://depot.dev).
 
-## 🍬: flavors
+## 🍬 flavors
 
 Currently available variant and architecture for Ravel:
 
