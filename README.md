@@ -25,7 +25,7 @@ You can directly use the image on your CI/CD Platform you want, and let Ravel do
 
 > Heavily inspired by [Laravel Sail](https://github.com/laravel/sail), handcrafted using [Depot](https://depot.dev).
 
-## 🍬 flavors
+### 🍬 flavors
 
 Currently available variant and architecture for Ravel:
 
@@ -34,7 +34,7 @@ Currently available variant and architecture for Ravel:
 | 7.4              | :heavy_check_mark: | :x:                | :x:                |
 | 8.0              | :heavy_check_mark: | :x:                | :x:                |
 | 8.1              | :heavy_check_mark: | :x:                | :x:                |
-| 8.2              | :heavy_check_mark: | :heavy_check_mark: | :x:                |
+| **8.2**          | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | 8.2-alpine       | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 
 The tag used by Ravel image indicates the PHP Version it uses.
