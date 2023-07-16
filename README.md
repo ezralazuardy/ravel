@@ -11,7 +11,7 @@
   <img src="https://img.shields.io/docker/image-size/ezralazuardy/ravel/8.2-alpine?color=orange" alt="Docker Image Size">
 </a>
 
-## 🪶 Ravel
+## :feather: ravel
 
 A simplified, battery-included CI/CD Environment for the Laravel framework.
 
@@ -25,7 +25,7 @@ You can directly use the image on your CI/CD Platform you want, and let Ravel do
 
 > Heavily inspired by [Laravel Sail](https://github.com/laravel/sail), handcrafted using [Depot](https://depot.dev).
 
-## 🚀 Flavors
+## :candy: flavors
 
 Currently available variant and architecture for Ravel:
 
