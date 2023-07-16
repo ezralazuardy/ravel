@@ -5,7 +5,7 @@
   <img src="https://img.shields.io/github/license/ezralazuardy/ravel?color=yellow" alt="License">
 </a>
 <a href="https://hub.docker.com/r/ezralazuardy/ravel/tags" target="_blank" rel="noopener noreferrer">
-  <img src="https://img.shields.io/docker/pulls/ezralazuardy/ravel?color=blue" alt="Docker Pull">
+  <img src="https://img.shields.io/docker/stars/ezralazuardy/ravel?color=blue" alt="Docker Stars">
 </a>
 <a href="https://hub.docker.com/r/ezralazuardy/ravel/tags" target="_blank" rel="noopener noreferrer">
   <img src="https://img.shields.io/docker/image-size/ezralazuardy/ravel/8.2-alpine?color=orange" alt="Docker Image Size">
